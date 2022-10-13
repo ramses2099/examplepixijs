@@ -8,6 +8,10 @@ PIXI JS
     const canvasHeight = 600;
     let keys = [];
 
+    //
+    let pointer = new Vector2(0,0);
+
+
     const app = new PIXI.Application({
         width: canvasWidth,
         height: canvasHeight
@@ -30,14 +34,39 @@ PIXI JS
     document.body.addEventListener('keyup', function (event) {
         keys[event.code] = false;
     });
+    /*------------------------------------------------------------------------------------------
+    MOUSE EVENT
+    -------------------------------------------------------------------------------------------*/
+    const canva = document.querySelector('canvas');    
+
+
+    canva.addEventListener('mousedown', function(event){
+       pointer.add(Vector2(event.clientX, event.clientY));              
+    });
+    //
+    canva.addEventListener('mouseup', function(event){
+        pointer = new Vector2(0, 0);
+    });
+    //
+    /*------------------------------------------------------------------------------------------
+    UTILS MATH
+    -------------------------------------------------------------------------------------------*/
+    const getRandomNumber = (min, max) => {
+        let n = Math.random() * (max - min) + min;
+        return n;
+    }
+
+    let n = getRandomNumber(0.0200, 0.120);
+    console.log(n);
 
     /*------------------------------------------------------------------------------------------
     PIXI JS CLASS
     -------------------------------------------------------------------------------------------*/
     class Mover{
         constructor(){
-            this.location = new Victor(25, 25);
-            this.velocity = new Victor(1,2);
+            this.location = new Vector2(25, 25);
+            this.acceleration = new Vector2(0,0);
+            this.velocity = new Vector2(0.25, 0);
             this.radius = 15;
             
             //graphics
@@ -45,15 +74,24 @@ PIXI JS
             this.graphics.x = this.location.x;
             this.graphics.y = this.location.y;
             app.stage.addChild(this.graphics);
-            
+ 
+            console.log(this.velocity);
+
             console.log(`Id ${+Date.now()}`);
-            console.log(`Position (x, y) =[${this.graphics.x},${this.graphics.y}]`);
+            console.log(`Position (x, y) = [${this.graphics.x},${this.graphics.y}]`);
         }
         //
         Update() {
             this.Edges();
+
+            pointer.subtract(this.location);            
+            this.acceleration.scale(0.5);
+
             //
-            this.location.add(this.velocity);   
+            this.velocity.add(this.acceleration);
+            this.location.add(this.velocity); 
+            
+            //this.velocity.limit(1);
         }
         //
         Edges(){
@@ -84,8 +122,6 @@ PIXI JS
         }
 
     }
-
-
     /*------------------------------------------------------------------------------------------
      PIXI JS INIT OBJECTS
      -------------------------------------------------------------------------------------------*/
@@ -108,6 +144,11 @@ PIXI JS
     app.ticker.add((delta) => {
         textFps = `FPS ${delta.toFixed(2)}`;
         fps.text = textFps;
+        //
+
+        
+        
+
 
         //draw live
         boid.Update();
