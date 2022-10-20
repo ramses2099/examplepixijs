@@ -54,9 +54,7 @@ PIXI JS
             this.sprite.y = Math.random() * canvasHeight / 2;
             this.sprite.rotation = Math.PI;
 
-            app.stage.addChild(this.sprite);
-
-                       
+            app.stage.addChild(this.sprite);                       
         }
 
         Update(){
@@ -100,7 +98,7 @@ PIXI JS
             textFps = `FPS ${delta.toFixed(2)}`;
             fps.text = textFps;
 
-            //Utils.move(enemyd, 2);
+            Utils.move(enemyd, 2);
 
 
 
