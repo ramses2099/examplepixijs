@@ -30,13 +30,13 @@ window.addEventListener("load", function (event) {
 
   const render = function () {
     //TODO render
-    display.renderColor(game.color);
+    display.renderColor(game.world.background_color);
     display.render();
   };
 
   const update = function () {
-    if(controller.left.active){console.log('left');}
-    if(controller.right.active){}
+    if(controller.left.active){game.world.player.moveLeft();}
+    if(controller.right.active){game.world.player.moveRight();}
     if(controller.up.active){}
     game.update();
   };
