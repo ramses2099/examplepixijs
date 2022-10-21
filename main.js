@@ -1,72 +1,57 @@
-import Controller from "./js/controller.js";
-import Display from "./js/display.js";
-import Engine from "./js/engine.js";
-import Game from "./js/game.js";
-/*---------------------------------------------------
-PIXI 
-----------------------------------------------------*/
-const Application = PIXI.Application;
-
-const CANVAS_WIDTH = 600,
-  CANVAS_HEIGHT = 500;
-
-const app = new Application({
-  width: CANVAS_WIDTH,
-  height: CANVAS_HEIGHT,
-  antialias: true,
-  transparent: false,
-  resolution: 1,
-});
-
 /*---------------------------------------------------
 LOAD DO
 ----------------------------------------------------*/
 window.addEventListener("load", function (event) {
   "use strict";
 
-  ///////////////////////////////////////////////////
-  /////////////////FUNCTIONS////////////////////////
-  /////////////////////////////////////////////////
-
-  const render = function () {
-    //TODO render
-    display.renderColor(game.world.background_color);
-    display.render();
-  };
-
+  //IPO => input - process - output
   const update = function () {
-    if(controller.left.active){game.world.player.moveLeft();}
-    if(controller.right.active){game.world.player.moveRight();}
-    if(controller.up.active){}
-    game.update();
+    output.renderColor(procesor.getRandomColor());
   };
 
-  const keyDownUp = function (event) {
-    controller.keyDownUp(event.type, event.keyCode);
+  //input
+  const Input = function (fn) {
+    this.handlerClick = function (event) {
+        fn();
+    };
   };
 
-  const resize = function(event){
-    display.resize(document.documentElement.clientWidth, document.documentElement.clientHeight, game.world.height/game.world.width);
-    display.render();
+  Input.prototype ={
+    constructor: Input
   }
 
-  // controller
-  let controller = new Controller();
-  // display
-  let display = new Display(app);
-  // game
-  let game = new Game();
-  // engine
-  let engine = new Engine(1000 / 30, render, update);
+  //process
+  const Processor = function () {
 
-  ///////////////////////////////////////////////////
-  /////////////////INITIALIZE///////////////////////
-  /////////////////////////////////////////////////
+    this.getRandomColor = function(){
+        let color =Math.floor(Math.random() * 16777215).toString(16);
+        return `#${color}`;
+    }
 
-  window.addEventListener("resize", resize);
-  window.addEventListener("keydown", keyDownUp);
-  window.addEventListener("keyup", keyDownUp);
+  };
 
-  resize();
-  engine.start();
+  Processor.prototype ={
+    constructor: Processor
+  }
+
+  //output
+  const Output = function (element) {
+
+    this.element = element;
+
+    this.renderColor = function(color){
+        this.element.style.backgroundColor = color;
+    }
+
+  };
+
+  Output.prototype ={
+    constructor: Output
+  }
+
+  let input = new Input(update);
+  let procesor = new Processor();
+  let output = new Output(this.document.body);
+
+  window.addEventListener("click", input.handlerClick);
 });
